@@ -1,6 +1,7 @@
 package ec.edu.utpl.util;
 
 public class BusquedaMatriz extends Thread {
+
     private String[] fila;
     private String palabra;
     private static int total = 0;
@@ -12,16 +13,31 @@ public class BusquedaMatriz extends Thread {
 
     @Override
     public void run() {
-        int contador = 0;
-        for (String elemento : fila) {
-            if (elemento.equals(palabra)) {
-                contador++;
+
+        int coincidencias = 0;
+
+        try {
+
+            for (int i = 0; i < fila.length; i++) {
+
+                if (fila[i].equalsIgnoreCase(palabra)) {
+                    coincidencias++;
+                }
             }
+
+            synchronized (BusquedaMatriz.class) {
+                total += coincidencias;
+            }
+
+            System.out.println(getName()
+                    + " finalizó su búsqueda. Coincidencias encontradas: "
+                    + coincidencias);
+
+        } catch (Exception e) {
+
+            System.out.println("Error durante la búsqueda en el hilo: "
+                    + getName());
         }
-        synchronized (BusquedaMatriz.class) {
-            total += contador;
-        }
-        System.out.println(Thread.currentThread().getName() + " finalizado - Encontrados: " + contador);
     }
 
     public static int getTotal() {
